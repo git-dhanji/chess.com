@@ -65,7 +65,21 @@ io.on("connection", (socket) => {
 
       // valid turn so move the turn
       const moveResult = chess.move(move);
-    } catch (error) {}
+
+      if (moveResult) {
+        currentPlayers = players.turn();
+        //move 
+        io.emit("move", move);
+        // boarstate
+        io.emit("boardState", chess.fen());
+      } else {
+        console.log("invalid move ", move);
+        socket.emit("invalidMove", move);
+      }
+    } catch (error) {
+      console.log("error while moving insider ", error);
+      socket.emit("invalidMove", move);
+    }
   });
 });
 
