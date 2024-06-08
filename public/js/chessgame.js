@@ -1,3 +1,4 @@
 const socket = io();
 
-socket.emit('reply')
+
+socket.emit('emit_init')

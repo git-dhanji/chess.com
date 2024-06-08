@@ -21,7 +21,7 @@ const io = socket(server);
 
 const chess = new Chess();
 let players = {};
-let currentPlayers = "W";
+let currentPlayers = "w";
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -30,19 +30,43 @@ app.get("/", (req, res) => {
   res.render("index", { title: "Multi chess game " });
 });
 
-// io is on here
+// when user is connect on io
 io.on("connection", (socket) => {
-  console.log("connected");  
+  // socket.id is connected user unique id
+  console.log("connected", socket.id);
 
+  if (!players.white) {
+    players.white = socket.id;
+    socket.emit("playerRole", "w");
+  }
+  // if not black player role
+  else if (!players.black) {
+    players.black = socket.id;
+    socket.emit("playerRole", "b");
+  } else {
+    socket.emit("spectedRole");
+  }
 
-  socket.on('disconnect',()=>{
-    console.log('disconnected',)
-  })
+  // stop the match if any player disconnect the session
+  socket.on("disconnect", () => {
+    if (socket.id === players.black) {
+      delete players.black;
+    } else if (socket.id === players.white) {
+      delete players.white;
+    }
+  });
 
-  socket.on('reply',()=>{
-    socket.emit("reply send successfully")
-  })
-  
+  // move any chal
+  socket.on("move", (move) => {
+    try {
+      // check which player have turn
+      if (chess.turn() === "w" && socket.id !== players.white) return;
+      if (chess.turn() === "b" && socket.id !== players.black) return;
+
+      // valid turn so move the turn
+      const moveResult = chess.move(move);
+    } catch (error) {}
+  });
 });
 
 server.listen(port, () => {
