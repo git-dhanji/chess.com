@@ -7,9 +7,61 @@
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<style>
+    .chessboard {
+        border: 2px solid lightblue;
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-rows: repeat(8, minmax(0, 1fr));
+        width: 400px;
+        height: 400px;
+        transform: rotate(0deg);
+    }
+
+    .piece .white {
+        color: aliceblue;
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
+    }
+
+    .piece .black {
+        color: #000;
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
+    }
+
+    .squire {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .squire.light {
+        background-color: aliceblue;
+    }
+
+    .squire.dark {
+        background-color: #0000;
+    }
+
+    .piece{
+        font-size: 36px;
+        cursor: pointer;
+    }
+    .piece.draggable{
+        cursor: grab;
+    }
+
+    .dragging{
+        opacity: 0.5;
+    }
+    .flipped .piece{
+        transform: rotate(180deg);
+    }
+</style>
 
 <body>
-    <h1>Server is starting...</h1>
+    <div class="h-screen w-full bg-zinc-900 flex items-center justify-center">
+        <div class="chessboard w-[600px] h-[600px]  "></div>
+    </div>
 </body>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"

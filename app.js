@@ -49,6 +49,7 @@ io.on("connection", (socket) => {
 
   // stop the match if any player disconnect the session
   socket.on("disconnect", () => {
+    console.log(`${socket.id} user disconnected`);
     if (socket.id === players.black) {
       delete players.black;
     } else if (socket.id === players.white) {
@@ -68,7 +69,7 @@ io.on("connection", (socket) => {
 
       if (moveResult) {
         currentPlayers = players.turn();
-        //move 
+        //move
         io.emit("move", move);
         // boarstate
         io.emit("boardState", chess.fen());
